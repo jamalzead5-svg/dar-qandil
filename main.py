@@ -102,15 +102,15 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text("الكتاب الفردي بـ 3 دنانير + توصيل 2. ابعت اسم الكتاب اللي بدك ياه.")
 
 def main():
-    # شغل موقع الويب بخيط لحاله
-    threading.Thread(target=run_flask, daemon=True).start()
-    
     if not TOKEN:
-        print("حط BOT_TOKEN في Secrets!")
-        # خلي Flask شغال حتى لو ما في توكن عشان ما يطلع 404
-        port = int(__import__("os").getenv("PORT", 5000))
+        print("حط BOT_TOKEN في Secrets! الموقع شغال بدون بوت حاليا")
+        # شغل Flask فقط - بدون خيط تاني عشان ما يصير تضارب بالبورت
+        port = int(os.getenv("PORT", 5000))
         app.run(host="0.0.0.0", port=port)
         return
+
+    # شغل موقع الويب بخيط لحاله بس لما يكون في توكن
+    threading.Thread(target=run_flask, daemon=True).start()
 
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
@@ -120,3 +120,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
